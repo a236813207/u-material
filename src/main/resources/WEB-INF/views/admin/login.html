@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - 登录</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <%include("inc/header.html"){}%>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <script>if(window.top !== window.self){ window.top.location = window.location;}</script>
+</head>
+
+<body class="gray-bg">
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+    <div>
+        <div>
+            <h2 class="logo-name">WECHAT</h2>
+        </div>
+        <h3 class="m-b">欢迎使用 后台管理系统</h3>
+
+        <form id="form1" class="layui-form mt" role="form" action="">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="用户名" required lay-verify="required" name="username"
+                       size="20" maxlength="20">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="密码" required lay-verify="required" name="password"
+                       size="20" maxlength="20" >
+            </div>
+            <!--<div class="form-group input-group m-b">
+                <input type="text" class="form-control" placeholder="验证码" required="required" name="validcode">
+                <div class="input-group-addon">
+                    <img title="点击更换图片" id="verImg" height="20" style="cursor: pointer;" border="0" src="${ctxPath}/login/validcode?Math.random();" onClick="changeImg();"/>
+                    <span><a href="javascript:changeImg();">看不清?</a></span>
+                </div>
+            </div>-->
+            <button lay-filter="login" lay-submit class="btn btn-primary block full-width m-b">登 录</button>
+
+            <!--<p class="text-muted text-center">
+                <a href="#"><small>忘记密码了？</small></a> | <a href="#"> 注册</a>
+            </p>-->
+        </form>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script type="text/javascript" src="${ctxPath}/js/jquery.min.js?v=2.1.4"></script>
+<script type="text/javascript" src="${ctxPath}/js/plugins/layui/layui.js?v=2.4.5"></script>
+<script type="text/javascript" src="${ctxPath}/js/bootstrap.min.js?v=3.3.6"></script>
+<script type="text/javascript" src="${ctxPath}/js/common.js"></script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(login)', function(data){
+            var fields = data.field;
+            util.post("${ctxPath}/admin/login", fields, function(res){
+                console.log(res);
+                if(res.code==200){
+                    location.href="${ctxPath}/admin/main";
+                }else{
+                    layer.open({
+                        content: data.info==null?"登录失败":data.info,
+                        btn: '我知道了'
+                    });
+                }
+            });
+            return false;
+        });
+    });
+    /*function changeImg() {
+        var img = document.getElementById("verImg");
+        img.src = "${ctxPath}/login/validcode?" + Math.random();
+    }*/
+
+</script>
+</body>
+
+</html>

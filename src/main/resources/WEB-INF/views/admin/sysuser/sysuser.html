@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - 后台管理员</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <%include("../inc/header.html"){}%>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <!--<div class="ibox-title">
+                    <h5>帐号管理 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>-->
+                <div class="ibox-content" style="overflow: auto;">
+                    <!-- <div class="form-inline">
+                        <div class="input-group m-b">
+                            <span class="input-group-btn"><button type="button" onclick="searchUser()" class="btn btn-primary">搜</button></span>
+                            <input type="text" placeholder="输入帐号查询" id="username" class="form-control">
+                         </div>
+                    </div> -->
+                    <div class="m-t-sm">
+                        <a class="btn btn-primary" data-toggle="modal" data-target="#addSysUser" data-operation="add">添加后台管理员</a>
+                    </div>
+                    <div class="modal inmodal" id="addSysUser" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content animated bounceInLeft">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+                                    </button>
+                                    <h3 class="modal-title">添加后台管理员</h3>
+                                </div>
+                                <form id="form1" class="layui-form mt" role="form" action="">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">账户名称：</label>
+                                            <input type="text" class="form-control" placeholder="账户名称" required="required"
+                                                   id="username"  name="username" datatype="*" size="40" maxlength="40">
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+                                        <div id="passwordGroup" class="form-group">
+                                            <label class="col-sm-3 control-label">密码：</label>
+                                            <input type="password" class="form-control" placeholder="密码" name="password"
+                                                   id="password" datatype="*" size="64" maxlength="64">
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">电话：</label>
+                                            <input type="text" class="form-control" placeholder="电话" name="telephone"
+                                                   id="telephone" ignore="ignore" size="255" maxlength="255">
+                                            <span class="Validform_checktip"></span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                                        <!--<button type="submit" class="btn btn-primary">保存</button>-->
+                                        <button lay-filter="save" lay-submit class="btn btn-primary">保存</button>
+                                    </div>
+                                    <input type="hidden" id="id" name="id">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table id="dataTables" class="table table-striped table-bordered table-hover dataTables-example"
+                           style="overflow: auto;white-space: nowrap; -webkit-overflow-scrolling: touch;" width="100%">
+                        <thead>
+                        <tr>
+                            <th>账户名称</th>
+                            <th>电话</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>最近登录时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%include("../inc/footer.html"){}%>
+
+<!-- Page-Level Scripts -->
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(save)', function(data){
+            var fields = data.field;
+            util.postSync("${ctxPath}/admin/sysuser", JSON.stringify(fields), function(res){
+                console.log(res);
+                if(res.code==200){
+                    $("#addSysUser").modal('hide');  //手动关闭
+                    searchUser();
+                }else{
+                    parent.openMsgByStatus(res);
+                }
+            });
+            return false;
+        });
+    });
+
+    var datatable;
+    $(function() {
+        $.fn.dataTable.ext.errMode = "throw";
+        datatable = $('#dataTables').DataTable({
+            "paging": true,
+            "pageLength": 10,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            //"aaSorting" : [[0, "asc"]], //默认的排序方式，第1列，升序排列
+            "info": true,  //显示表格信息
+            "autoWidth": true,
+            "destroy":true,
+            "scrollX": true,   //水平新增滚动轴
+            "scrollCollapse": true,//不限制长度滚动条
+            "processing":false,
+            "serverSide":true,    //true代表后台处理分页，false代表前台处理分页
+            //"aLengthMenu":[5,10,20],
+            //"pagingType" : "full_numbers", //详细分页组，可以支持直接跳转到某页
+            //当处理大数据时，延迟渲染数据，有效提高Datatables处理能力
+            "deferRender": true,
+            "ajax":{
+                url:"${ctxPath}/admin/sysuser/list",
+                type:"get",
+                dataSrc: function(result){
+                    console.log(result);
+                    layer.closeAll(); //关闭所有层
+                    //抛出异常
+                    if(result.code != 200){
+                        parent.openMsgByStatus(result);
+                        return "";
+                    }
+                    return result.data; //自定义数据源，默认为data
+                },
+            },
+            "columns": [{
+                "data": "username"
+            },{
+                "data": "telephone"
+            },{
+                "data": "status"
+            },{
+                "data": "createTime"
+            },{
+                "data": "lastLoginTime"
+            },{
+                "data": null
+            }],
+            "columnDefs": [{
+                "targets": 2,
+                "render": function(data, type, row, meta) {
+                    switch (data) {
+                        case "enable":
+                            return "<span class=\"text-navy\">正常</span>";
+                        case "disabled":
+                            return "<span class=\"text-danger\">禁用</span>";
+                        case "locked":
+                            return "<span class=\"text-danger\">已锁定</span>";
+                        default:
+                            return data;
+                    }
+                },
+            },{
+                "targets": 5,
+                "render": function(data, type, row, meta) {
+                    var html = '<a class="btn btn-sm btn-primary" style="margin-left: 5px" href="#" ' +
+                        'data-toggle="modal" data-target="#addSysUser" data-operation="edit" data-curid="'+row.id+'" ' +
+                        'data-curusername="'+row.username+'" data-curtelephone="'+row.telephone+'">编辑</a>';
+                    if (row.username != 'admin') {
+                        if (row.status == 'enable') {
+                            html += '<a class="btn btn-sm btn-primary" style="margin-left: 20px" href="#" ' +
+                                'onclick="changeState('+row.id+', \'disabled\')">禁用</a>';
+                        }else {
+                            html += '<a class="btn btn-sm btn-primary" style="margin-left: 20px" href="#" ' +
+                                'onclick="changeState('+row.id+', \'enable\')">启用</a>';
+                        }
+                        html += '<a class="btn btn-sm btn-primary" style="margin-left: 20px" href="#" ' +
+                            'onclick="resetPassword('+row.id+')">重置密码</a>' +
+                            '<a class="btn btn-sm btn-primary" style="margin-left: 20px" href="#" ' +
+                            'onclick="deleteSysUser('+row.id+')">删除</a>';
+                    }
+                    return html;
+                },
+            }],
+            /*是否开启主题*/
+            "JQueryUI": true,
+            "oLanguage": {    // 语言设置
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sZeroRecords": "抱歉， 没有找到",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": " ",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "sZeroRecords": "暂无记录！",
+                "sSearch": "检索:",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                }
+            },
+        });
+
+        $('#addSysUser').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var operation = button.data('operation'); // Extract info from data-* attributes
+            console.log("operation:"+operation);
+            var modal = $(this);
+            if(operation=="add"){
+                modal.find('.modal-title').text("添加后台管理员");
+                $('#id').val("");
+                $('#username').val("");
+                $('#username').removeAttr("disabled");
+                $('#password').removeAttr("disabled");
+                $('#passwordGroup').show();
+                $('#telephone').val("");
+            }else if(operation=="edit"){
+                modal.find('.modal-title').text("编辑后台管理员");
+                var id = button.data('curid');
+                modal.find('#id').val(id);
+                modal.find('#username').val(button.data('curusername'));
+                modal.find('#username').attr("disabled","disabled");
+                modal.find('#password').attr("disabled","disabled");
+                modal.find('#passwordGroup').hide();
+                modal.find('#telephone').val(button.data('curtelephone'));
+            }
+        });
+    });
+
+    function changeState(id, status) {
+        var data = '{\"id\":'+id+',\"status\":"'+status+'"}';
+        util.postSync("${ctxPath}/admin/sysuser/change-state", JSON.parse(data), function(res){
+            if(res.code==200){
+                layer.msg('修改成功！');
+                searchUser();
+            }else{
+                parent.openMsgByStatus(res);
+            }
+        });
+    }
+
+    function resetPassword(id){
+        layer.confirm('确定重置密码？', {
+            btn: ['确定','取消'] //按钮
+        }, function() {
+            util.postSync("${ctxPath}/admin/sysuser/reset-password/"+id, null, function(res){
+                if(res.code==200){
+                    layer.msg('修改成功！');
+                    searchUser();
+                }else{
+                    parent.openMsgByStatus(res);
+                }
+            });
+        });
+    }
+
+    function deleteSysUser(id) {
+        layer.confirm('确定删除该帐号？', {
+            btn: ['确定','取消'] //按钮
+        }, function() {
+            util.postSync("${ctxPath}/admin/sysuser/delete/"+id, null, function(res){
+                if(res.code==200){
+                    layer.msg('删除成功！');
+                    searchUser();
+                }else{
+                    parent.openMsgByStatus(res);
+                }
+            });
+        });
+    }
+
+    function searchUser(){
+        //loading带文字
+        //var index = layer.load();
+        var url = "${ctxPath}/admin/sysuser/list";
+        datatable.ajax.url(url).load();
+    }
+</script>
+
+</body>
+
+</html>

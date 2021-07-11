@@ -1,0 +1,34 @@
+server:
+  port: 10000
+################################ spring config start ###############################
+spring:
+  profiles:
+    active: dev
+  application:
+    name: wechat
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  banner:
+    charset: UTF-8
+    location: classpath:config/banner.txt
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+
+# logback.xml中有详细的日志配置
+logging:
+  config: classpath:config/logback.xml
+  #  方便Spring Boot Admin页面上实时查看日志
+  file:
+    name: logs/material.log
+################################ spring config end #################################
+
+################################ mybatis-plus config start #########################
+mybatis-plus:
+  type-enums-package: com.ken.material.enums
+################################ mybatis-plus config end ###########################

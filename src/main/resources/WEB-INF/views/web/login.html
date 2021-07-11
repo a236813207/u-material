@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="usucai" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="logo,素材,素材下载,logo下载,矢量素材,素材下载,矢量logo,UI设计,设计,图标,设计素材,design,logo设计,平面设计,UI设计,网站设计,APP设计" />
+	<meta name="description" content="优素材(usucai),设计师素材下载,专为UI设计,网页设计,平面设计等提供便利的平台" />
+	<link rel="shortcut icon " type="images/x-icon" href="images/favicon.png">
+	<link rel="stylesheet" href="${ctxPath}/css/web/style.css">
+	<title>用户登录 - 优素材 (usucai)</title>
+	<script type="text/javascript">
+		window.onload =function(){
+			const img = document.getElementById("image");
+			const ran = Math.floor(Math.random() * 3);
+			img.src = "${ctxPath}/images/web/random/" + ran + ".png";
+		}
+	</script>
+</head>
+<body>
+	<div class="login">
+		<div class="login-box">
+			<h1>用户登录<span>欢迎来到优素材网站，请登录您的账号</span></h1>
+			<div class="login-content">
+				<label>账号</label>
+				<div><input class="username" type="text" name="phone" placeholder="手机号码/账号"></div>
+				<label>密码</label>
+				<div><input class="username" type="password" name="password" placeholder="密码"></div>
+				<div class="login-forget"><a href="${ctxPath}/user/resetpassword">忘记密码？</a></div>
+				<button class="u-signin btn">登录</button>
+				<div class="login-info">为了保证您的信息安全，我们不会在优素材(usucai)以外使用您的信息。</div>
+				<div class="login-info">还没有账号？点击<a href="${ctxPath}/user/register">注册账号</a></div>
+			</div>
+			<div class="login-copyright">Copyright © 2021 Usucai. All Rights Reserved</div>
+		</div>
+		<div class="login-show">
+			<div class="usucai icon-logo"></div>
+			<p>设计，让世界更出彩</p>
+			<div class="work-show"><img id="image" src="" alt=""></div>
+		</div>
+		
+	</div>
+</body>
+</html>
