@@ -1,7 +1,10 @@
 package com.ken.material.service;
 
-import com.ken.material.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ken.material.entity.User;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -14,11 +17,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IUserService extends IService<User> {
 
     /**
-     * 根据用户名查找
-     * @param username 用户名
-     * @return User
+     * 登录
+     * @param phone 电话
+     * @param password 密码
+     * @param request 请求
+     * @param response 返回
      */
-    User findByUsername(String username);
+    void login(String phone, String password, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 注册
@@ -27,6 +32,20 @@ public interface IUserService extends IService<User> {
      * @param smsCode 短信验证码
      */
     void register(String phone, String password, String smsCode);
+
+    /**
+     * 登出
+     * @param request 请求
+     * @param response 返回
+     */
+    void logout(HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 根据用户名查找
+     * @param username 用户名
+     * @return User
+     */
+    User findByUsername(String username);
 
 
 }
