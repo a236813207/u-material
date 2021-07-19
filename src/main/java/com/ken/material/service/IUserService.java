@@ -1,7 +1,10 @@
 package com.ken.material.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ken.material.common.page.PageVo;
+import com.ken.material.controller.admin.query.UserQueryParam;
 import com.ken.material.entity.User;
+import com.ken.material.vo.UserListVo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +18,20 @@ import javax.servlet.http.HttpServletResponse;
  * @since 2021-07-04
  */
 public interface IUserService extends IService<User> {
+
+    /**
+     * 用户分页查询
+     * @param queryParam 查询参数
+     * @return PageVo<UserListVo>
+     */
+    PageVo<UserListVo> searchPage(UserQueryParam queryParam);
+
+    /**
+     * 更新状态
+     * @param id id
+     * @param status 状态
+     */
+    void updateStatus(Long id, int status);
 
     /**
      * 登录

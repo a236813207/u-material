@@ -28,75 +28,23 @@
                     </div>
                 </div>-->
                 <div class="ibox-content" style="overflow: auto;">
-                    <!-- <div class="form-inline">
+                     <div class="form-inline">
                         <div class="input-group m-b">
                             <span class="input-group-btn"><button type="button" onclick="searchUser()" class="btn btn-primary">搜</button></span>
                             <input type="text" placeholder="输入帐号查询" id="username" class="form-control">
                          </div>
-                    </div> -->
-                    <div class="m-t-sm">
-                        <a class="btn btn-primary" data-toggle="modal" data-target="#addUser" data-operation="add">添加帐号</a>
                     </div>
-                    <div class="modal inmodal" id="addUser" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content animated bounceInLeft">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
-                                    </button>
-                                    <h3 class="modal-title">添加帐号</h3>
-                                </div>
-                                <form id="form1" class="layui-form mt" role="form" action="">
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">账户：</label>
-                                            <input type="text" class="form-control" placeholder="账户名称" required="required"
-                                                   id="username"  name="username" datatype="*" size="40" maxlength="40">
-                                            <span class="Validform_checktip"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">昵称：</label>
-                                            <input type="text" class="form-control" placeholder="昵称" name="nickname"
-                                                   id="nickname" datatype="*" ignore="ignore" size="64" maxlength="64">
-                                            <span class="Validform_checktip"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">头像：</label>
-                                            <input type="text" style="display: none" placeholder="头像" name="avatar"
-                                                   id="avatar" ignore="ignore" size="255" maxlength="255">
-                                            <span class="Validform_checktip"></span>
-                                            <div>
-                                                <button type="button" class="layui-btn" id="uploadAvatar">
-                                                    <!--<i class="layui-icon">&#xe67c;</i>-->上传图片
-                                                </button>
-                                                <img id="avatarview" style="display: none; margin-left: 20px" title='预览图' alt='缩略图' width='50' height='50' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                                        <!--<button type="submit" class="btn btn-primary">保存</button>-->
-                                        <button lay-filter="save" lay-submit class="btn btn-primary">保存</button>
-                                    </div>
-                                    <input type="hidden" id="id" name="id">
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
                     <table id="dataTables" class="table table-striped table-bordered table-hover dataTables-example"
                            style="overflow: auto;white-space: nowrap; -webkit-overflow-scrolling: touch;" width="100%">
                         <thead>
                         <tr>
                             <th>用户名</th>
-                            <th>昵称</th>
-                            <th>头像</th>
-                            <th>更新时间</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
-
                         </tbody>
                     </table>
                 </div>
@@ -109,45 +57,6 @@
 
 <!-- Page-Level Scripts -->
 <script>
-    layui.use('form', function(){
-        var form = layui.form;
-        //监听提交
-        form.on('submit(save)', function(data){
-            var fields = data.field;
-            util.postSync("${ctxPath}/admin/user", JSON.stringify(fields), function(res){
-                console.log(res);
-                if(res.code==200){
-                    $("#addUser").modal('hide');  //手动关闭
-                    searchUser();
-                }else{
-                    parent.openMsgByStatus(res);
-                }
-            });
-            return false;
-        });
-    });
-
-    layui.use('upload', function(){
-        var upload = layui.upload;
-
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#uploadAvatar' //绑定元素
-            ,url: '${ctxPath}/common/upload' //上传接口
-            ,done: function(res){
-                //上传完毕回调
-                console.log(res);
-                layer.msg("上传成功")
-                $('#avatar').val(res.data);
-                $('#avatarview').show();
-                $('#avatarview').attr("src" ,res.data);
-            }
-            ,error: function(){
-                //请求异常回调
-            }
-        });
-    });
-
     var datatable;
     $(function() {
         $.fn.dataTable.ext.errMode = "throw";
@@ -173,7 +82,6 @@
                 url:"${ctxPath}/admin/user/list",
                 type:"get",
                 dataSrc: function(result){
-                    console.log(result);
                     layer.closeAll(); //关闭所有层
                     //抛出异常
                     if(result.code != 200){
@@ -186,33 +94,32 @@
             "columns": [{
                 "data": "username"
             },{
-                "data": "nickname"
+                "data": "status"
             },{
-                "data": "avatar"
-            },{
-                "data": "modifyTime"
+                "data": "createTime"
             },{
                 "data": null
             }],
             "columnDefs": [{
-                "targets": 0,
+                "targets": 1,
                 "render": function(data, type, row, meta) {
-                    return "<span class=\"\">"+data+"</span>";
+                    if (data.value == 1) {
+                        return '<span class="text-navy">'+data.desc+'</span>';
+                    }else {
+                        return '<span class="text-danger">'+data.desc+'</span>';
+                    }
                 },
             },{
-                "targets": 2,
+                "targets": 3,
                 "render": function(data, type, row, meta) {
-                    return "<img height='50' width='50' src='"+ data +"'/>";
-                },
-            },{
-                "targets": 4,
-                "render": function(data, type, row, meta) {
-                    return '<a class="btn btn-sm btn-primary" style="margin-left: 5px" href="#" ' +
-                        'data-toggle="modal" data-target="#addUser" data-operation="edit" ' +
-                        'data-curid="'+row.id+'" data-curusername="'+row.username+'" data-curnickname="'+row.nickname+'" ' +
-                        'data-curavatar="'+row.avatar+'">编辑</a>' +
-                        '<a class="btn btn-sm btn-danger" style="margin-left: 10px" href="#" ' +
-                        'onclick="deleteUser('+row.id+')">删除</a>';
+                    if (row.status.value == 1) {
+                        return '<a class="btn btn-sm btn-danger" style="margin-left: 10px" ' +
+                            'onclick="updateUser('+row.id+', 0, \'锁定\')">锁定</a>';
+                    }else if (row.status.value == 0) {
+                        return '<a class="btn btn-sm btn-success" style="margin-left: 10px" ' +
+                            'onclick="updateUser('+row.id+', 1, \'解锁\')">解锁</a>';
+                    }
+
                 },
             }],
             /*是否开启主题*/
@@ -233,42 +140,15 @@
                 }
             },
         });
-
-        $('#addUser').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var operation = button.data('operation'); // Extract info from data-* attributes
-            console.log("operation:"+operation);
-            var modal = $(this);
-            if(operation=="add"){
-                modal.find('.modal-title').text("添加账号");
-                $('#id').val("");
-                $('#username').val("");
-                $('#username').removeAttr("disabled");
-                $('#nickname').val("");
-                $('#avatar').val("");
-                $('#avatar').attr("src", "");
-                $('#avatarview').hide();
-            }else if(operation=="edit"){
-                modal.find('.modal-title').text("编辑账号");
-                var id = button.data('curid');
-                modal.find('#id').val(id);
-                modal.find('#username').val(button.data('curusername'));
-                modal.find('#username').attr("disabled","disabled");
-                modal.find('#nickname').val(button.data('curnickname'));
-                modal.find('#avatar').val(button.data('curavatar'));
-                modal.find('#avatarview').attr("src" ,button.data('curavatar'));
-                modal.find('#avatarview').show();
-            }
-        });
     });
 
-    function deleteUser(id) {
-        layer.confirm('确定删除该帐号（删除后将无法恢复）？', {
+    function updateUser(id, status, msg) {
+        layer.confirm('确定'+msg+'该帐号？', {
             btn: ['确定','取消'] //按钮
         }, function() {
-            util.postSync("${ctxPath}/admin/user/delete/"+id, null, function(res){
+            util.postSync("${ctxPath}/admin/user/update/"+id+"?status="+status, null, function(res){
                 if(res.code==200){
-                    layer.msg('删除成功！');
+                    layer.msg('更新成功！');
                     searchUser();
                 }else{
                     parent.openMsgByStatus(res);
@@ -280,7 +160,8 @@
     function searchUser(){
         //loading带文字
         //var index = layer.load();
-        var url = "${ctxPath}/admin/user/list";
+        const username = $("#username").val();
+        const url = "${ctxPath}/admin/user/list?username="+username;
         datatable.ajax.url(url).load();
     }
 </script>

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ken.material.common.page.PageVo;
 import com.ken.material.controller.web.query.MaterialIndexQueryParam;
 import com.ken.material.entity.Material;
+import com.ken.material.vo.MaterialAddVo;
 import com.ken.material.vo.MaterialIndexVo;
 
 /**
@@ -18,4 +19,5 @@ public interface IMaterialService extends IService<Material> {
 
     PageVo<MaterialIndexVo> findIndexList(MaterialIndexQueryParam queryParam);
 
+    void add(MaterialAddVo addVo);
 }

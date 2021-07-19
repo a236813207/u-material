@@ -5,12 +5,17 @@ import com.ken.material.common.response.ResBody;
 import com.ken.material.entity.Material;
 import com.ken.material.interceptor.TokenAuth;
 import com.ken.material.service.IMaterialService;
+import com.ken.material.service.ITagService;
 import com.ken.material.vo.MaterialAddVo;
+import com.ken.material.vo.TagListVo;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class MaterialController {
 
     private IMaterialService materialService;
+    private ITagService tagService;
 
     @GetMapping("/{id}")
     public String detail(@PathVariable String id, Model model) {
@@ -42,19 +48,27 @@ public class MaterialController {
 
     @GetMapping("/add")
     @TokenAuth
-    public String add() {
+    public String add(Model model) {
+        List<TagListVo> tags = this.tagService.searchList();
+        model.addAttribute("tags", tags);
         return "/web/add";
     }
 
     @PostMapping("/add")
     @TokenAuth
-    public ResBody<?> add(MaterialAddVo addVo) {
+    public ResBody<?> add(@Validated MaterialAddVo addVo) {
+        this.materialService.add(addVo);
         return ResBody.success();
     }
 
     @Autowired
     public void setMaterialService(IMaterialService materialService) {
         this.materialService = materialService;
+    }
+
+    @Autowired
+    public void setTagService(ITagService tagService) {
+        this.tagService = tagService;
     }
 }
 

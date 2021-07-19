@@ -11,7 +11,9 @@ import com.ken.material.entity.Material;
 import com.ken.material.enums.MaterialStatus;
 import com.ken.material.mapper.MaterialMapper;
 import com.ken.material.service.IMaterialService;
+import com.ken.material.vo.MaterialAddVo;
 import com.ken.material.vo.MaterialIndexVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -54,5 +56,13 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
             return vo;
         }).collect(Collectors.toList());
         return PageVo.create(queryParam.getCurrent(), queryParam.getPageSize(), materialPage.getTotal(), list);
+    }
+
+
+    @Override
+    public void add(MaterialAddVo addVo) {
+        Material material = new Material();
+        BeanUtils.copyProperties(addVo, material);
+        this.save(material);
     }
 }
