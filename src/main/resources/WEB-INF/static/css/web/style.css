@@ -7,11 +7,13 @@ blockquote, q{quotes: none;}
 blockquote:before, blockquote:after, q:before, q:after{content: ''; content: none;}
 table{border-collapse: collapse; border-spacing: 0;}
 th, td{vertical-align: middle;}
-a{text-decoration:none;}
+a{text-decoration:none; cursor:pointer;}
 a:hover{text-decoration:underline;}
 .clearfix:after { content:""; display:block; height:0; clear:both; visibility:hidden; }
 .clearfix { zoom: 1; }
 ::selection { color:#fff; background:#EB4280; }
+
+.hide {display: none}
 
 body { background-color:#f4f4f4; }
 .header { height:60px; position:relative; background-color:#3930D8; }
@@ -91,7 +93,16 @@ input::-webkit-input-placeholder { color:#ccc; }
 .add-logo .upload-btn { display:block; height:50px; line-height:50px; text-decoration:none; background-color:#EB4280; border-radius:6px; margin-top:30px; color:#fff; text-align:center; font-size:16px; }
 .add-logo .notice { color:#999; font-size:14px; text-align:center; padding:40px 0; text-decoration:none; }
 .add-logo .dropcontent { height:140px; border:2px dashed #efefef; position:relative; }
-.add-logo .dropcontent button { position:absolute; width:180px; height:45px; font-size:14px; color:#000; left:50%; margin-left:-90px; top:45px; outline:0; border:none; background-color:#efefef; }
+.add-logo .dropcontent button { position:absolute; width:180px; height:45px; font-size:14px; color:#000; left:25%; margin-left:-90px; top:45px; outline:0; border:none; background-color:#efefef; cursor:pointer;}
+.add-logo .dropcontent img{
+    width: 140px;
+    height: 140px;
+    right: 25%;
+    position: absolute;
+    margin-right: -90px;
+    border:1px dashed #ea7272;
+}
+
 .addlabel { overflow:hidden; }
 .addlabel  .label-content { width:620px; }
 .addlabel a { box-sizing:border-box; text-decoration:none; float:left; width:87px; height:40px; line-height:40px; text-align:center; font-size:14px; border-radius:5px; border:1px solid #f3f3f3; margin:0 15px 15px 0; color:#666; }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ken.material.common.handler.CurrentUserMethodArgumentResolver;
+import com.ken.material.interceptor.CookieInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.SimpleDateFormat;
@@ -27,6 +30,8 @@ import java.util.TimeZone;
 @Configuration
 @ConditionalOnWebApplication
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private CookieInterceptor cookieInterceptor;
 
     @Bean
     @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
@@ -52,13 +57,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
         argumentResolvers.add(new CurrentUserMethodArgumentResolver());
     }
 
-    /*@Bean
-    public LogInterceptor logInterceptor(){
-        return new LogInterceptor();
-    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(logInterceptor()).addPathPatterns("/admin/**");
-    }*/
+        registry.addInterceptor(cookieInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/admin/**");
+    }
+
+    @Autowired
+    public void setCookieInterceptor(CookieInterceptor cookieInterceptor) {
+        this.cookieInterceptor = cookieInterceptor;
+    }
 }

@@ -65,7 +65,7 @@
                     location.href="${ctxPath}/admin/main";
                 }else{
                     layer.open({
-                        content: data.info==null?"登录失败":data.info,
+                        content: data.msg==null?"登录失败":data.msg,
                         btn: '我知道了'
                     });
                 }

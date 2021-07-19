@@ -3,7 +3,9 @@ package com.ken.material.controller.web;
 
 import com.ken.material.common.response.ResBody;
 import com.ken.material.entity.Material;
+import com.ken.material.interceptor.TokenAuth;
 import com.ken.material.service.IMaterialService;
+import com.ken.material.vo.MaterialAddVo;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +37,18 @@ public class MaterialController {
     @PostMapping("/list")
     @ResponseBody
     public ResBody<?> list(String key) {
+        return ResBody.success();
+    }
+
+    @GetMapping("/add")
+    @TokenAuth
+    public String add() {
+        return "/web/add";
+    }
+
+    @PostMapping("/add")
+    @TokenAuth
+    public ResBody<?> add(MaterialAddVo addVo) {
         return ResBody.success();
     }
 

@@ -47,5 +47,11 @@ public interface IUserService extends IService<User> {
      */
     User findByUsername(String username);
 
-
+    /**
+     * 根据用户名和密码查找
+     * @param phone 手机号
+     * @param password 密码
+     * @return User
+     */
+    User findByUsernameAndPassword(String phone, String password);
 }

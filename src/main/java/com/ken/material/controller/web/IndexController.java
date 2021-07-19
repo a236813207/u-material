@@ -32,6 +32,8 @@ public class IndexController {
         MaterialIndexQueryParam queryParam = new MaterialIndexQueryParam();
         PageVo<MaterialIndexVo> indexList = this.materialService.findIndexList(queryParam);
         model.addAttribute("list", indexList.getContent());
+        // 获取用户信息
+
         return "/web/index";
     }
 

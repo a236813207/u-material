@@ -58,8 +58,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new AuthenticationException("账号或密码错误");
         }
         request.getSession().setAttribute("userId", user.getId());
-        Cookie cookie = new Cookie(phone, user.getPassword());
+        Cookie phoneCookie = new Cookie("phone", phone);
+        phoneCookie.setMaxAge(-1);
+        phoneCookie.setPath("/");
+        response.addCookie(phoneCookie);
+        Cookie cookie = new Cookie("security", user.getPassword());
         cookie.setMaxAge(-1);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 
@@ -108,7 +113,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public User findByUsername(String username) {
-        return this.getOne(Wrappers.lambdaQuery(User.class).eq(User::getUsername, username).last("limit 1"));
+        return this.getOne(Wrappers.lambdaQuery(User.class).eq(User::getUsername, username));
+    }
+
+    @Override
+    public User findByUsernameAndPassword(String phone, String password) {
+        return this.getOne(Wrappers.lambdaQuery(User.class).eq(User::getUsername, phone).eq(User::getPassword, password));
     }
 
     @Autowired

@@ -76,7 +76,7 @@ public class SmsController {
             throw new BizException(BizCodeFace.createBizCode(ErrorCode.ACCOUNT_EXISTIS).message("手机号已注册"));
         }
         this.smsService.sendCode(REGISTER_SMS_TEMPLATE, phone, String.format(CommonCacheKey.REGISTER_CODE, phone));
-        return ResBody.success("发送成功");
+        return ResBody.success().message("发送成功");
     }
 
     @PostMapping("/forget-pwd")

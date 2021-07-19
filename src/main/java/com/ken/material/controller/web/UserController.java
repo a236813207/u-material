@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * <p>
  * 用户表 前端控制器
@@ -33,8 +36,8 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResBody<?> login(String phone, String password) {
-
+    public ResBody<?> login(String phone, String password, HttpServletRequest request, HttpServletResponse response) {
+        this.userService.login(phone, password, request, response);
         return ResBody.success();
     }
 
@@ -50,11 +53,19 @@ public class UserController {
         return ResBody.success();
     }
 
-    @PostMapping("/send/sms")
-    public ResBody<?> register(String phone, String validCode) {
+    @GetMapping("/reset/password")
+    public String resetPassword() {
+        return "/web/resetpassword";
+    }
 
+    @PostMapping("/register")
+    @ResponseBody
+    public ResBody<?> resetPassword(String phone, String password, String smsCode) {
+        this.userService.register(phone, password, smsCode);
         return ResBody.success();
     }
+
+
 
     @GetMapping("/logout")
     @ResponseBody

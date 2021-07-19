@@ -50,10 +50,14 @@ var util = {
 	        	if(res.code==200){
 					callback(res);
 				}else if(res.code==201 || res.code==202){
-					if(self != top){
-						top.location.href='${ctxPath}/admin/login'
+	        		if (this.url.indexOf("/admin/") > 0) {
+						if(self != top){
+							top.location.href='${ctxPath}/admin/login'
+						}
+						location.href='${ctxPath}/admin/login'
+					}else {
+	        			layer.msg(res.msg);
 					}
-					location.href='${ctxPath}/admin/login'
 				}else{
 					layer.alert(res.msg, {icon:2});
 				}
@@ -927,114 +931,6 @@ $.fn.extend({
 String.prototype.trim = function() {
   return this.replace(/(^\s*)|(\s*$)/g, '')
 }
-
-layui.form.verify({
-	required:function(value,item){
-		if(value.replace(/\s+/g,"") === ''){
-			return '必填项不能为空'
-		}
-	},
-	phone:function(value,item){
-		if(value !== ''){
-			var reg =  /^1[3|4|5|6|7|8|9][0-9]{9}$/;
-			var reg2 = /^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
-			if(!reg.test(value) && !reg2.test(value)){
-				return '请输入正确的电话号码'
-			}
-		}
-	},
-	length255:function(value,item){
-		if(value !== ''){
-			if(value.length > 255){
-				return '不能超过255个字符';
-			}
-		}
-	},
-	length100:function(value,item){
-		if(value !== ''){
-			if(value.length > 100){
-				return '不能超过100个字符';
-			}
-		}
-	},
-	length200:function(value,item){
-		if(value !== ''){
-			if(value.length > 200){
-				return '不能超过200个字符';
-			}
-		}
-	},
-	length500:function(value,item){
-		if(value !== ''){
-			if(value.length > 500){
-				return '不能超过500个字符';
-			}
-		}
-	},
-	length10:function(value,item){
-		if(value !== ''){
-			if(value.length>10){
-				return '不能超过10个字符'
-			}
-		}
-	},
-	length30:function(value,item){
-		if(value !== ''){
-			if(value.length > 30){
-				return '不能超过30个字符';
-			}
-		}
-	},
-	length20:function(value,item){
-		if(value !== ''){
-			if(value.length > 20){
-				return '不能超过20个字符';
-			}
-		}
-	},
-	idCardVerify:function(value,item){
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-        if(value !== ''){
-            if(!reg.test(value)){
-                return '请输入有效的身份证号码'
-            }
-        }
-    },
-    realName:function(value,item){
-		if(value !== ''){
-			var reg = /^([\u4e00-\u9fa5]{1,20}|[a-zA-Z\.\s]{1,20})$/;
-			if(!reg.test(value)){
-				return '真实姓名格式不正确';
-			}
-		}
-	},
-	isBankNo:function(value,item){
-		if(value !== ''){
-			value = value.replace(/ /g,'');
-			var reg = /^([1-9]{1})(\d{15}|\d{18})$/;
-			if(!reg.test(value)){
-				return '银行卡号格式不正确'
-			}
-		}
-	},
-	numberPositive:function(value,item){
-		if(value !== ''){
-			var reg = /^[1-9]\d*$/;
-			if(!reg.test(value)){
-				return '请输入正整数'
-			}
-		}
-	},
-	numberInt:function(value){
-		if(value !== ''){
-			var reg = /^[0-9]\d*$/;
-			if(!reg.test(value)){
-				return '请输入整数'
-			}
-		}
-	}
-});
-
 
 $('input[type="password"]').on('paste',function(){
 	//限制密码不能复制

@@ -9,6 +9,7 @@
 	<meta name="description" content="优素材(usucai),设计师素材下载,专为UI设计,网页设计,平面设计等提供便利的平台" />
 	<link rel="shortcut icon " type="images/x-icon" href="images/favicon.png">
 	<link rel="stylesheet" href="${ctxPath}/css/web/style.css">
+	<link href="${ctxPath}/js/plugins/layui/css/layui.css?v=2.4.5" rel="stylesheet"/>
 	<title>用户登录 - 优素材 (usucai)</title>
 	<script type="text/javascript">
 		window.onload =function(){
@@ -23,12 +24,14 @@
 		<div class="login-box">
 			<h1>用户登录<span>欢迎来到优素材网站，请登录您的账号</span></h1>
 			<div class="login-content">
-				<label>账号</label>
-				<div><input class="username" type="text" name="phone" placeholder="手机号码/账号"></div>
-				<label>密码</label>
-				<div><input class="username" type="password" name="password" placeholder="密码"></div>
-				<div class="login-forget"><a href="${ctxPath}/user/resetpassword">忘记密码？</a></div>
-				<button class="u-signin btn">登录</button>
+				<form id="form1" class="layui-form mt" role="form" action="">
+					<label>账号</label>
+					<div><input class="username" type="text" name="phone" placeholder="手机号码/账号"></div>
+					<label>密码</label>
+					<div><input class="username" type="password" name="password" placeholder="密码"></div>
+					<div class="login-forget"><a href="${ctxPath}/user/resetpassword">忘记密码？</a></div>
+					<button lay-filter="login" lay-submit class="u-signin btn">登录</button>
+				</form>
 				<div class="login-info">为了保证您的信息安全，我们不会在优素材(usucai)以外使用您的信息。</div>
 				<div class="login-info">还没有账号？点击<a href="${ctxPath}/user/register">注册账号</a></div>
 			</div>
@@ -41,5 +44,42 @@
 		</div>
 		
 	</div>
+
+	<script type="text/javascript" src="${ctxPath}/js/jquery.min.js?v=2.1.4"></script>
+	<script type="text/javascript" src="${ctxPath}/js/plugins/layui/layui.js?v=2.4.5"></script>
+	<script type="text/javascript" src="${ctxPath}/js/common.js"></script>
+
+	<script>
+		layui.use('form', function(){
+			const form = layui.form;
+
+			//监听提交
+			form.on('submit(login)', function(data){
+				const fields = data.field;
+				const phone = fields.phone;
+				if (!phone) {
+					layer.msg('请输入手机号码');
+					return false;
+				}
+				if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(phone))){
+					layer.msg('请输入正确的手机号码');
+					return false;
+				}
+
+				util.post("${ctxPath}/user/login", fields, function(res){
+					console.log(res);
+					if(res.code==200){
+						location.href="${ctxPath}/";
+					}else{
+						layer.open({
+							content: data.msg==null?"登录失败":data.msg,
+							btn: '我知道了'
+						});
+					}
+				});
+				return false;
+			});
+		});
+	</script>
 </body>
 </html>
