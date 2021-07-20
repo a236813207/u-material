@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - 素材管理</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <%include("../inc/header.html"){}%>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content" style="overflow: auto;">
+                    <div class="form-inline">
+                        <div class="input-group m-b">
+                            <input type="text" placeholder="输入帐号查询" id="username" class="form-control">
+                            <span class="input-group-btn"><button type="button" onclick="searchMaterial()" class="btn btn-primary">搜</button></span>
+                        </div>
+                    </div>
+                    <div class="m-t-sm">
+                        <a class="btn btn-primary" data-toggle="modal" data-target="#addMaterial" data-operation="add">添加素材</a>
+                    </div>
+                    <div class="modal inmodal" id="addMaterial" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content animated bounceInLeft">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+                                    </button>
+                                    <h3 class="modal-title">添加图片聊天记录</h3>
+                                </div>
+                                <form class="layui-form mt" role="form" action="">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">发送方：</label>
+                                            <select name="fromUserId" class="form-group" required="required" datatype="*">
+                                                <%for(user in users){%>
+                                                <option value="${user.id!}">${user.username!}</option>
+                                                <%}%>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">接收方：</label>
+                                            <select name="toUserId" class="form-group" required="required" datatype="*">
+                                                <%for(user in users){%>
+                                                <option value="${user.id!}">${user.username!}</option>
+                                                <%}%>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">消息时间：</label>
+                                            <input type="text" class="form-control layer-date" placeholder="消息时间" name="msgTime"
+                                                   id="layer-date1" datatype="*">
+                                        </div>
+                                        <div class="form-group" style="display: none">
+                                            <label class="col-sm-3 control-label">消息类型：</label>
+                                            <input type="text" class="form-control" placeholder="消息时间" name="msgType"
+                                                   value="TIMImageElem" datatype="*">
+                                        </div>
+                                        <div  class="form-group">
+                                            <label class="col-sm-3 control-label">图片地址：</label>
+                                            <input type="text" class="form-control" placeholder="图片地址" name="imageUrl"
+                                                   id="imageUrl" disabled size="255" maxlength="255">
+                                            <input type="text" class="form-control" placeholder="图片类型" name="imageFormat"
+                                                   id="imageFormat" style="display: none">
+                                            <input type="text" class="form-control" placeholder="图片大小" name="imageSize"
+                                                   id="imageSize" style="display: none">
+                                            <span class="Validform_checktip"></span>
+                                            <div>
+                                                <button type="button" class="layui-btn" id="uploadImageFile">
+                                                    <!--<i class="layui-icon">&#xe67c;</i>-->上传图片文件
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                                        <!--<button type="submit" class="btn btn-primary">保存</button>-->
+                                        <button lay-filter="save" lay-submit class="btn btn-primary">保存</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="dataTables" class="table table-striped table-bordered table-hover dataTables-example"
+                           style="overflow: auto;white-space: nowrap; -webkit-overflow-scrolling: touch;" width="100%">
+                        <thead>
+                        <tr>
+                            <th>发送方</th>
+                            <th>接收方</th>
+                            <th>消息类型</th>
+                            <th>内容</th>
+                            <th>消息时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%include("../inc/footer.html"){}%>
+<!-- Page-Level Scripts -->
+<script>
+    var datatable;
+    $(function() {
+        $.fn.dataTable.ext.errMode = "throw";
+        datatable = $('#dataTables').DataTable({
+            "paging": true,
+            "pageLength": 10,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            //"aaSorting" : [[0, "asc"]], //默认的排序方式，第1列，升序排列
+            "info": true,  //显示表格信息
+            "autoWidth": true,
+            "destroy":true,
+            "scrollX": true,   //水平新增滚动轴
+            "scrollCollapse": true,//不限制长度滚动条
+            "processing":false,
+            "serverSide":true,    //true代表后台处理分页，false代表前台处理分页
+            //"aLengthMenu":[5,10,20],
+            //"pagingType" : "full_numbers", //详细分页组，可以支持直接跳转到某页
+            //当处理大数据时，延迟渲染数据，有效提高Datatables处理能力
+            "deferRender": true,
+            "ajax":{
+                url:"${ctxPath}/admin/material/list",
+                type:"get",
+                dataSrc: function(result){
+                    layer.closeAll(); //关闭所有层
+                    //抛出异常
+                    if(result.code != 200){
+                        parent.openMsgByStatus(result);
+                        return "";
+                    }
+                    return result.data; //自定义数据源，默认为data
+                },
+            },
+            "columns": [{
+                "data": "fromUsername"
+            },{
+                "data": "toUsername"
+            },{
+                "data": "msgType"
+            },{
+                "data": "content"
+            },{
+                "data": "msgTime"
+            },{
+                "data": null
+            }],
+            "columnDefs": [{
+                "targets": 2,
+                "render": function(data, type, row, meta) {
+                    switch (data) {
+                        case "TIMTextElem":
+                            return "文本";
+                        case "TIMSoundElem":
+                            return "语音";
+                        case "TIMImageElem":
+                            return "图像";
+                        case "TIMVideoFileElem":
+                            return "视频";
+                        default:
+                            return data;
+                    }
+                },
+            },{
+                "targets": 3,
+                "render": function(data, type, row, meta) {
+                    var content = JSON.parse(data);
+                    //console.log(content);
+                    switch (row.msgType) {
+                        case "TIMTextElem":
+                            return content.text;
+                        case "TIMSoundElem":
+                            return "<a href=\"" + content.url + "\" target='_blank'>" + content.url +"</a>";
+                        case "TIMImageElem":
+                            return "<img height='50' width='50' src='"+ content.imageInfoArray[0].url +"'/>";
+                        case "TIMVideoFileElem":
+                            return content.videoUrl;
+                        default:
+                            return data;
+                    }
+                },
+            },{
+                "targets": 5,
+                "render": function(data, type, row, meta) {
+                    return '<a class="btn btn-sm btn-primary" style="margin-left: 5px"  href="javascript:deleteMessage('+row.id+');">删除</a>';
+                },
+            }],
+            /*是否开启主题*/
+            "JQueryUI": true,
+            "oLanguage": {    // 语言设置
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sZeroRecords": "抱歉， 没有找到",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": " ",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "sZeroRecords": "暂无记录！",
+                "sSearch": "检索:",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                }
+            },
+        });
+    });
+
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(save)', function(data){
+            var fields = data.field;
+            console.log(fields);
+            console.log(fields.msgType);
+            var content = new Object();
+            
+            fields.content= JSON.stringify(content);
+            fields.chatType= 1;
+            util.postSync("${ctxPath}/admin/message", JSON.stringify(fields), function(res){
+                console.log(res);
+                if(res.code==200){
+                    switch (fields.msgType) {
+                        case "TIMTextElem":
+                            $("#addMaterial").modal('hide');  //手动关闭
+                            break;
+                        case "TIMSoundElem":
+                            $("#addSoundMessage").modal('hide');  //手动关闭
+                            break;
+                        case "TIMImageElem":
+                            $("#addImageMessage").modal('hide');  //手动关闭
+                            break;
+                        case "TIMVideoFileElem":
+                            $("#addVideoMessage").modal('hide');  //手动关闭
+                            break;
+                        default:
+                            break;
+                    }
+                    searchMaterial();
+                }else{
+                    parent.openMsgByStatus(res);
+                }
+            });
+            return false;
+        });
+    });
+
+    layui.use('upload', function(){
+        var upload = layui.upload;
+
+        var map = new Map();
+        map.set("JPG", 1);
+        map.set("GIF", 2);
+        map.set("PNG", 3);
+        map.set("BMP", 4);
+
+        //执行实例
+        upload.render({
+            elem: '#uploadImageFile' //绑定元素
+            ,url: '${ctxPath}/common/upload' //上传接口
+            ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                obj.preview(function(index, file, result){
+                    console.log(file); //得到文件对象
+                    var fileName = file.name;
+                    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                    console.log(fileExtension);
+                    // 图片格式。JPG = 1，GIF = 2，PNG = 3，BMP = 4，其他 = 255
+                    var imageFormat = map.get(fileExtension.toUpperCase()) == null ? 255 : map.get(fileExtension.toUpperCase());
+                    console.log(imageFormat);
+                    $('#imageFormat').val(imageFormat);
+                    $('#imageSize').val(file.size);
+                });
+            }
+            ,done: function(res){
+                //上传完毕回调
+                console.log(res);
+                layer.msg("上传成功")
+                $('#imageUrl').val(res.data);
+            }
+            ,accept: 'images'
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+    });
+
+    function searchMaterial(){
+        //loading带文字
+        //var index = layer.load();
+        var url = "${ctxPath}/admin/material/list";
+        datatable.ajax.url(url).load();
+    }
+
+    function deleteMessage(id) {
+        layer.confirm('确定删除该条聊天记录？', {
+            btn: ['确定','取消'], //按钮
+            shade: false //不显示遮罩
+        }, function(){
+            $.ajax({
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                url: "${ctxPath}/admin/material/delete?id="+id,
+                success:function(state){
+                    if (state.code == '200') {
+                        layer.msg("操作成功！",function(index){
+                            layer.close(index);
+                            searchMaterial();
+                        });
+                    }else {
+                        parent.openMsgByStatus(state);
+                    }
+                },
+                error: function(state){
+                    layer.alert("加载页面发生异常或您无此操作的权限！");
+                },
+            });
+        }, function(){ });
+    }
+</script>
+
+</body>
+
+</html>

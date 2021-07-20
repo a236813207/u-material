@@ -2,7 +2,7 @@ package com.ken.material.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ken.material.common.page.PageVo;
-import com.ken.material.controller.admin.query.UserQueryParam;
+import com.ken.material.controller.admin.query.AdminUserQueryParam;
 import com.ken.material.entity.User;
 import com.ken.material.vo.UserListVo;
 
@@ -24,7 +24,7 @@ public interface IUserService extends IService<User> {
      * @param queryParam 查询参数
      * @return PageVo<UserListVo>
      */
-    PageVo<UserListVo> searchPage(UserQueryParam queryParam);
+    PageVo<UserListVo> searchPage(AdminUserQueryParam queryParam);
 
     /**
      * 更新状态

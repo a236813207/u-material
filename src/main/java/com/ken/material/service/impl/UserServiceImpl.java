@@ -13,7 +13,7 @@ import com.ken.material.common.exception.BizException;
 import com.ken.material.common.page.PageVo;
 import com.ken.material.common.util.PasswordUtil;
 import com.ken.material.constant.CommonCacheKey;
-import com.ken.material.controller.admin.query.UserQueryParam;
+import com.ken.material.controller.admin.query.AdminUserQueryParam;
 import com.ken.material.entity.User;
 import com.ken.material.enums.UserStatus;
 import com.ken.material.mapper.UserMapper;
@@ -51,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private ISmsService smsService;
 
     @Override
-    public PageVo<UserListVo> searchPage(UserQueryParam queryParam) {
+    public PageVo<UserListVo> searchPage(AdminUserQueryParam queryParam) {
         Page<User> page = new Page<>(queryParam.getPage(), queryParam.getRows());
         page.setOrders(Lists.newArrayList(OrderItem.desc("create_time")));
         QueryWrapper<User> wrapper = new QueryWrapper<>();

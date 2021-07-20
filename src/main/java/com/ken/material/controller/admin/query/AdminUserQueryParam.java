@@ -2,6 +2,7 @@ package com.ken.material.controller.admin.query;
 
 import com.ken.material.common.page.PageRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author ken
@@ -9,7 +10,8 @@ import lombok.Data;
  * @date 2020-09-14
  */
 @Data
-public class UserQueryParam extends PageRequest {
+@EqualsAndHashCode(callSuper = true)
+public class AdminUserQueryParam extends PageRequest {
     private String username;
     private String nickname;
 }

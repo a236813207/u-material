@@ -2,8 +2,7 @@ package com.ken.material.controller.admin;
 
 import com.ken.material.common.page.PageVo;
 import com.ken.material.common.response.ResBody;
-import com.ken.material.controller.admin.query.UserQueryParam;
-import com.ken.material.enums.UserStatus;
+import com.ken.material.controller.admin.query.AdminUserQueryParam;
 import com.ken.material.service.IUserService;
 import com.ken.material.vo.UserListVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class AdminUserController {
 
     @GetMapping("/list")
     @ResponseBody
-    public Object list(UserQueryParam queryParam) {
+    public Object list(AdminUserQueryParam queryParam) {
         PageVo<UserListVo> pageVo = this.userService.searchPage(queryParam);
         Map<String, Object> map = new HashMap<>(8);
         map.put("recordsTotal", pageVo.getTotal());

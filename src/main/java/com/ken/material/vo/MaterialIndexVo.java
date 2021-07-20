@@ -12,7 +12,7 @@ public class MaterialIndexVo {
 
     private Long id;
 
-    private String name;
+    private String brand;
 
     private String url;
 

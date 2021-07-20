@@ -29,10 +29,10 @@ public class Material extends BaseEntity {
     private Long userId;
 
     /**
-     * 名称
+     * 用户名
      */
-    @TableField("name")
-    private String name;
+    @TableField("username")
+    private String username;
 
     /**
      * url
@@ -75,6 +75,12 @@ public class Material extends BaseEntity {
      */
     @TableField("copyright")
     private String copyright;
+
+    /**
+     * 排序号
+     */
+    @TableField("sort_no")
+    private Long sortNo;
 
     /**
      * 状态 0待审核 1正常 -1无效

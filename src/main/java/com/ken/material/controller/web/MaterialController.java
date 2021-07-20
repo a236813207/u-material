@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -56,8 +57,8 @@ public class MaterialController {
 
     @PostMapping("/add")
     @TokenAuth
-    public ResBody<?> add(@Validated MaterialAddVo addVo) {
-        this.materialService.add(addVo);
+    public ResBody<?> add(@Validated MaterialAddVo addVo, HttpServletRequest request) {
+        this.materialService.add(addVo, request);
         return ResBody.success();
     }
 
