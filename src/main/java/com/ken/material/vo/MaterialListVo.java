@@ -15,8 +15,6 @@ public class MaterialListVo {
 
     private Long id;
 
-    private String name;
-
     private String username;
 
     private String brand;

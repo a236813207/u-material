@@ -58,7 +58,7 @@ public class UserController {
         return "/web/resetpassword";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/reset/password")
     @ResponseBody
     public ResBody<?> resetPassword(String phone, String password, String smsCode) {
         this.userService.register(phone, password, smsCode);

@@ -20,7 +20,7 @@ public class SpringBootPlusGenerator {
 
     @Test
     public void generateCode() {
-        generate("user", "tb_user", "tb_material");
+        generate("user", "tb_tag");
     }
 
     private void generate(String moduleName, String... tableNamesInclude) {

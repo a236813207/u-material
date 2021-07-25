@@ -11,6 +11,7 @@
     <meta http-equiv="refresh" content="0;ie.html" />
     <![endif]-->
 
+    <link href="${ctxPath}/css/plugins/datepicker/datepicker3.css" rel="stylesheet">
     <%include("../inc/header.html"){}%>
 </head>
 
@@ -21,10 +22,33 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-content" style="overflow: auto;">
                     <div class="form-inline">
-                        <div class="input-group m-b">
-                            <input type="text" placeholder="输入帐号查询" id="username" class="form-control">
-                            <span class="input-group-btn"><button type="button" onclick="searchMaterial()" class="btn btn-primary">搜</button></span>
+                        <div class="form-group">
+                            <label for="username" class="sr-only">用户名称</label>
+                            <input type="text" placeholder="输入用户名称查询" id="username" name="username" class="form-control">
                         </div>
+                        <div class="form-group">
+                            <label for="brand" class="sr-only">品牌</label>
+                            <input type="text" placeholder="输入品牌查询" id="brand" name="brand" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="keywords" class="sr-only">关键词</label>
+                            <input type="text" placeholder="输入关键词查询" id="keywords" name="keywords" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="status" class="sr-only">状态</label>
+                            <select id="status" name="status" class="form-control">
+                                <option>全部</option>
+                                <option value=0>待审核</option>
+                                <option value=1>正常</option>
+                                <option value=-1>无效</option>
+                            </select>
+                        </div>
+                        <div class="input-daterange input-group" id="datepicker">
+                            <input type="text" class="form-control" id="starttime" name="starttime" value="" placeholder="起始时间" />
+                            <span class="input-group-addon">-</span>
+                            <input type="text" class="form-control" id="endtime" name="endtime" value="" placeholder="结束时间" />
+                        </div>
+                        <a class="btn btn-primary" onclick="searchMaterial()" style="pointer-events: auto;">搜索</a>
                     </div>
                     <div class="m-t-sm">
                         <a class="btn btn-primary" data-toggle="modal" data-target="#addMaterial" data-operation="add">添加素材</a>
@@ -36,44 +60,44 @@
                                     <button type="button" class="close" data-dismiss="modal">
                                         <span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
                                     </button>
-                                    <h3 class="modal-title">添加图片聊天记录</h3>
+                                    <h3 class="modal-title">添加素材</h3>
                                 </div>
                                 <form class="layui-form mt" role="form" action="">
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label">发送方：</label>
-                                            <select name="fromUserId" class="form-group" required="required" datatype="*">
-                                                <%for(user in users){%>
-                                                <option value="${user.id!}">${user.username!}</option>
-                                                <%}%>
-                                            </select>
+                                            <label class="col-sm-3 control-label">用户名称：</label>
+                                            <input type="text" class="form-control" placeholder="用户名称"
+                                                   name="username" datatype="*">
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label">接收方：</label>
-                                            <select name="toUserId" class="form-group" required="required" datatype="*">
-                                                <%for(user in users){%>
-                                                <option value="${user.id!}">${user.username!}</option>
-                                                <%}%>
-                                            </select>
+                                            <label class="col-sm-3 control-label">品牌：</label>
+                                            <input type="text" class="form-control" placeholder="品牌"
+                                                   name="brand" datatype="*">
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label">消息时间：</label>
-                                            <input type="text" class="form-control layer-date" placeholder="消息时间" name="msgTime"
-                                                   id="layer-date1" datatype="*">
+                                            <label class="col-sm-3 control-label">关键词：</label>
+                                            <input type="text" class="form-control" placeholder="关键词"
+                                                   name="keywords" datatype="*">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">标签：</label>
+                                            <input type="text" class="form-control" placeholder="标签"
+                                                   name="tags" datatype="*">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">排序号：</label>
+                                            <input type="text" class="form-control" placeholder="排序号"
+                                                   name="sortNo" datatype="*">
                                         </div>
                                         <div class="form-group" style="display: none">
-                                            <label class="col-sm-3 control-label">消息类型：</label>
-                                            <input type="text" class="form-control" placeholder="消息时间" name="msgType"
-                                                   value="TIMImageElem" datatype="*">
+                                            <label class="col-sm-3 control-label">id：</label>
+                                            <input type="text" class="form-control" placeholder="id" name="id"
+                                                   id="id" datatype="*">
                                         </div>
                                         <div  class="form-group">
                                             <label class="col-sm-3 control-label">图片地址：</label>
-                                            <input type="text" class="form-control" placeholder="图片地址" name="imageUrl"
-                                                   id="imageUrl" disabled size="255" maxlength="255">
-                                            <input type="text" class="form-control" placeholder="图片类型" name="imageFormat"
-                                                   id="imageFormat" style="display: none">
-                                            <input type="text" class="form-control" placeholder="图片大小" name="imageSize"
-                                                   id="imageSize" style="display: none">
+                                            <input type="text" class="form-control" placeholder="图片地址" name="url"
+                                                   id="url" disabled size="255" maxlength="255">
                                             <span class="Validform_checktip"></span>
                                             <div>
                                                 <button type="button" class="layui-btn" id="uploadImageFile">
@@ -95,11 +119,13 @@
                            style="overflow: auto;white-space: nowrap; -webkit-overflow-scrolling: touch;" width="100%">
                         <thead>
                         <tr>
-                            <th>发送方</th>
-                            <th>接收方</th>
-                            <th>消息类型</th>
-                            <th>内容</th>
-                            <th>消息时间</th>
+                            <th>用户名称</th>
+                            <th>品牌</th>
+                            <th>关键词</th>
+                            <th>图像</th>
+                            <th>状态</th>
+                            <th>下载次数</th>
+                            <th>创建时间</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -115,7 +141,18 @@
 
 <%include("../inc/footer.html"){}%>
 <!-- Page-Level Scripts -->
+<script src="${ctxPath}/js/plugins/datepicker/bootstrap-datepicker.js"></script>
 <script>
+    $(document).ready(function() {
+        $('#datepicker').datepicker({
+            keyboardNavigation: true,	//是否显示箭头导航
+            forceParse: true,			//是否强制转换不符合格式的字符串
+            autoclose: true,			//自动关闭
+            todayBtn: true,          	//今天按钮
+            todayHighlight: true,    	//今天高亮
+        });
+    });
+
     var datatable;
     $(function() {
         $.fn.dataTable.ext.errMode = "throw";
@@ -151,56 +188,36 @@
                 },
             },
             "columns": [{
-                "data": "fromUsername"
+                "data": "username"
             },{
-                "data": "toUsername"
+                "data": "brand"
             },{
-                "data": "msgType"
+                "data": "keywords"
             },{
-                "data": "content"
+                "data": "url"
             },{
-                "data": "msgTime"
+                "data": "status"
+            },{
+                "data": "downloads"
+            },{
+                "data": "createTime"
             },{
                 "data": null
             }],
             "columnDefs": [{
-                "targets": 2,
-                "render": function(data, type, row, meta) {
-                    switch (data) {
-                        case "TIMTextElem":
-                            return "文本";
-                        case "TIMSoundElem":
-                            return "语音";
-                        case "TIMImageElem":
-                            return "图像";
-                        case "TIMVideoFileElem":
-                            return "视频";
-                        default:
-                            return data;
-                    }
-                },
-            },{
                 "targets": 3,
                 "render": function(data, type, row, meta) {
-                    var content = JSON.parse(data);
-                    //console.log(content);
-                    switch (row.msgType) {
-                        case "TIMTextElem":
-                            return content.text;
-                        case "TIMSoundElem":
-                            return "<a href=\"" + content.url + "\" target='_blank'>" + content.url +"</a>";
-                        case "TIMImageElem":
-                            return "<img height='50' width='50' src='"+ content.imageInfoArray[0].url +"'/>";
-                        case "TIMVideoFileElem":
-                            return content.videoUrl;
-                        default:
-                            return data;
-                    }
+                    return "<img height='50' width='50' src='"+ data +"'/>";
                 },
             },{
-                "targets": 5,
+                "targets": 4,
                 "render": function(data, type, row, meta) {
-                    return '<a class="btn btn-sm btn-primary" style="margin-left: 5px"  href="javascript:deleteMessage('+row.id+');">删除</a>';
+                    return data.desc;
+                },
+            },{
+                "targets": 7,
+                "render": function(data, type, row, meta) {
+                    return '<a class="btn btn-sm btn-primary" style="margin-left: 5px"  onclick="deleteMaterial('+row.id+');">删除</a>';
                 },
             }],
             /*是否开启主题*/
@@ -228,31 +245,10 @@
         //监听提交
         form.on('submit(save)', function(data){
             var fields = data.field;
-            console.log(fields);
-            console.log(fields.msgType);
-            var content = new Object();
-            
-            fields.content= JSON.stringify(content);
-            fields.chatType= 1;
-            util.postSync("${ctxPath}/admin/message", JSON.stringify(fields), function(res){
+            util.post("${ctxPath}/admin/material/add", fields, function(res){
                 console.log(res);
                 if(res.code==200){
-                    switch (fields.msgType) {
-                        case "TIMTextElem":
-                            $("#addMaterial").modal('hide');  //手动关闭
-                            break;
-                        case "TIMSoundElem":
-                            $("#addSoundMessage").modal('hide');  //手动关闭
-                            break;
-                        case "TIMImageElem":
-                            $("#addImageMessage").modal('hide');  //手动关闭
-                            break;
-                        case "TIMVideoFileElem":
-                            $("#addVideoMessage").modal('hide');  //手动关闭
-                            break;
-                        default:
-                            break;
-                    }
+
                     searchMaterial();
                 }else{
                     parent.openMsgByStatus(res);
@@ -264,38 +260,23 @@
 
     layui.use('upload', function(){
         var upload = layui.upload;
-
-        var map = new Map();
-        map.set("JPG", 1);
-        map.set("GIF", 2);
-        map.set("PNG", 3);
-        map.set("BMP", 4);
-
         //执行实例
         upload.render({
-            elem: '#uploadImageFile' //绑定元素
-            ,url: '${ctxPath}/common/upload' //上传接口
-            ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+            elem: '#uploadImageFile', //绑定元素
+            url: '${ctxPath}/common/upload', //上传接口
+            before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                 obj.preview(function(index, file, result){
                     console.log(file); //得到文件对象
-                    var fileName = file.name;
-                    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-                    console.log(fileExtension);
-                    // 图片格式。JPG = 1，GIF = 2，PNG = 3，BMP = 4，其他 = 255
-                    var imageFormat = map.get(fileExtension.toUpperCase()) == null ? 255 : map.get(fileExtension.toUpperCase());
-                    console.log(imageFormat);
-                    $('#imageFormat').val(imageFormat);
-                    $('#imageSize').val(file.size);
                 });
-            }
-            ,done: function(res){
+            },
+            done: function(res){
                 //上传完毕回调
-                console.log(res);
                 layer.msg("上传成功")
-                $('#imageUrl').val(res.data);
-            }
-            ,accept: 'images'
-            ,error: function(){
+                $('#url').val(res.data);
+            },
+            accept: 'file',
+            exts: 'jpg|png|gif|bmp|jpeg|svg',
+            error: function(){
                 //请求异常回调
             }
         });
@@ -308,8 +289,8 @@
         datatable.ajax.url(url).load();
     }
 
-    function deleteMessage(id) {
-        layer.confirm('确定删除该条聊天记录？', {
+    function deleteMaterial(id) {
+        layer.confirm('确定删除该条素材？', {
             btn: ['确定','取消'], //按钮
             shade: false //不显示遮罩
         }, function(){
@@ -317,7 +298,7 @@
                 type: "POST",
                 cache: false,
                 dataType: "json",
-                url: "${ctxPath}/admin/material/delete?id="+id,
+                url: "${ctxPath}/admin/material/delete/"+id,
                 success:function(state){
                     if (state.code == '200') {
                         layer.msg("操作成功！",function(index){

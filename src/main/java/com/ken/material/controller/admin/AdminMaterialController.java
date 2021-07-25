@@ -47,12 +47,14 @@ public class AdminMaterialController {
     }
 
     @PostMapping("/add")
+    @ResponseBody
     public ResBody<?> add(@Validated AdminMaterialAddVo addVo) {
         this.materialService.adminAdd(addVo);
         return ResBody.success();
     }
 
     @PostMapping("/update")
+    @ResponseBody
     public ResBody<?> update(@Validated AdminMaterialAddVo addVo) {
         this.materialService.adminUpdate(addVo);
         return ResBody.success();
