@@ -7,13 +7,18 @@
 <body>
 <div class="wrap">
 	<%include("inc/header.html"){}%>
-	<div class="banner">
+	<div class="search-content">
 		<div class="search-box">
-			<h1 class="banner-title">免费下载矢量LOGO</h1>
 			<div class="search">
-				<input id="searchText" type="text" placeholder="搜索关键词，如：特斯拉、抖音或苹果">
+				<input type="text" placeholder="搜索关键词，如：特斯拉、抖音或苹果">
 				<a onclick="search()" class="search-button btn usucai icon-search"></a>
 			</div>
+		</div>
+		<div class="Suggested">
+			<span>推荐：</span>
+			<a href="">特斯拉</a><a href="">苹果</a><a href="">360</a>
+			<a href="">腾讯科技</a><a href="">万科</a><a href="">优素材</a>
+			<a href="">华润万家</a>
 		</div>
 	</div>
 	<div class="items">
@@ -44,7 +49,6 @@
 	function search() {
 
 	}
-
 </script>
 </body>
 </html>

@@ -1,44 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="author" content="usucai" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="keywords" content="logo,素材,素材下载,logo下载,矢量素材,素材下载,矢量logo,UI设计,设计,图标,设计素材,design,logo设计,平面设计,UI设计,网站设计,APP设计" />
-	<meta name="description" content="facebook messenger,清风,优素材(usucai),设计师素材下载,专为UI设计,网页设计,平面设计等提供便利的平台" />
-	<link rel="shortcut icon " type="images/x-icon" href="images/web/favicon.png">
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="57x57" href="${ctxPath}images/web/apple/apple-icon-57x57.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="60x60" href="${ctxPath}/images/web/apple/apple-icon-60x60.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="72x72" href="${ctxPath}/images/web/apple/apple-icon-72x72.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="76x76" href="${ctxPath}/images/web/apple/apple-icon-76x76.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="114x114" href="${ctxPath}/images/web/apple/apple-icon-114x114.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="120x120" href="${ctxPath}/images/web/apple/apple-icon-120x120.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="144x144" href="${ctxPath}/images/web/apple/apple-icon-144x144.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="152x152" href="${ctxPath}/images/web/apple/apple-icon-152x152.png"/>
-    <link data-react-helmet="true" rel="apple-touch-icon" sizes="180x180" href="${ctxPath}/images/web/apple/apple-icon-180x180.png"/>
-	<link rel="stylesheet" href="${ctxPath}/css/web/style.css">
+	<%include("inc/link.html"){}%>
 	<script src="${ctxPath}/js/jquery.min.js" type="text/javascript"></script>
 	<script src="${ctxPath}/js/main.js"></script>
 	<title>Facebook Messenger - 优素材免费下载矢量图</title>
 </head>
 <body>
 <div class="wrap">
-	<header class="header cd-auto-hide-header">
-		<nav class="nav">
-			<div class="logo"><a class="usucai icon-logo" href="${ctxPath}"></a></div>
-			<div class="menu-list clearfix">
-				<ul>
-					<li><a href="index.html">首页</a></li>
-					<li><a href="rank.html">下载排行</a></li>
-					<li><a target="_blank" href="udesign.html">设计师导航</a></li>
-				</ul>
-			</div>
-			<div class="topsearch"><a title="搜索" class="usucai icon-search"></a></div>
-			<div class="upload"><a class="usucai icon-upload" title="上传" href="${ctxPath}/material/add"></a></div>
-			<div class="user"><a href=""><img src="${ctxPath}/images/web/avatar/avatar_04.jpg" alt=""></a></div>
-		</nav>
-	</header>
+	<%include("inc/header.html"){}%>
 	<div class="sucai">
 		<div class="sucai-content clearfix">
 			<div class="sucai-view">
@@ -113,11 +83,7 @@
 			</li>
 		</ul>
 	</div>
-	<footer class="footer">
-		<div class="link"><a href="javascript:;">关于我们</a><a href="javascript:;">用户协议</a><a href="javascript:;">联系我们</a></div>
-		<div class="social"><a href="" title="微信" class="usucai icon-wechat"></a><a href="" title="微博" class="usucai icon-weibo"></a></div>
-		<div class="copyright">Copyright © 2021 Usucai. All Rights Reserved</div>
-	</footer>
+	<%include("inc/footer.html"){}%>
 </div>
 </body>
 </html>
