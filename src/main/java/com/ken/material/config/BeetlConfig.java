@@ -1,5 +1,8 @@
 package com.ken.material.config;
 
+import com.ken.material.common.converter.LocalDateFormatter;
+import com.ken.material.common.converter.LocalDateTimeFormatter;
+import org.beetl.core.Format;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.ext.spring.BeetlGroupUtilConfiguration;
@@ -9,6 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Ken
@@ -35,9 +43,17 @@ public class BeetlConfig {
         beetlGroupUtilConfiguration.init();
         //如果使用了优化编译器，涉及到字节码操作，需要添加ClassLoader
         beetlGroupUtilConfiguration.getGroupTemplate().setClassLoader(loader);
-
+        beetlGroupUtilConfiguration.setTypeFormats(genTypeFormats());
         return beetlGroupUtilConfiguration;
     }
+
+    private Map<Class<?>, Format> genTypeFormats() {
+        Map<Class<?>, Format> typeFormats = new HashMap<>(8);
+        typeFormats.put(LocalDateTime.class, new LocalDateTimeFormatter());
+        typeFormats.put(LocalDate.class, new LocalDateFormatter());
+        return typeFormats;
+    }
+
 
     @Bean(name = "beetlViewResolver")
     public BeetlSpringViewResolver getBeetlSpringViewResolver(

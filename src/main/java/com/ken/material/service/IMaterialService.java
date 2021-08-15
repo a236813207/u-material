@@ -11,6 +11,7 @@ import com.ken.material.vo.MaterialIndexVo;
 import com.ken.material.vo.MaterialListVo;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -33,4 +34,6 @@ public interface IMaterialService extends IService<Material> {
     void adminUpdate(AdminMaterialAddVo addVo);
 
     void updateStatus(Long id, int status);
+
+    List<Material> countByTagId(Long tagId);
 }

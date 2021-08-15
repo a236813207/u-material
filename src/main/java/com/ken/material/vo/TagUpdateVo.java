@@ -1,10 +1,7 @@
 package com.ken.material.vo;
 
-import com.ken.material.enums.Status;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 /**
  * @author ken
@@ -13,10 +10,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TagListVo extends TagUpdateVo{
+public class TagUpdateVo extends TagAddVo{
 
-    private Status status;
-
-    private LocalDateTime createTime;
+    private Long id;
 
 }

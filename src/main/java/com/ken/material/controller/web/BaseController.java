@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Controller
 public class BaseController {
 
-    private IUserService userService;
+    public IUserService userService;
 
     public UserVo getUser(HttpServletRequest request) {
         Object userId = request.getSession().getAttribute("userId");

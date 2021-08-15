@@ -24,14 +24,16 @@
 				<input type="text"  name="keywords" placeholder="品牌别名便于搜索">
 				<h2>添加标签<span>标签可多选</span></h2>
 				 <div class="addlabel">
-					<div class="label-content clearfix">
-						<a class="select">房地产业</a>
-						<a>汽车行业</a>
-						<a>电信行业</a>
-						<a>电子行业</a>
-						<a>纺织行业</a>
+					<div id="addTag" class="label-content clearfix">
+						<%
+						for(tag in tags){
+						%>
+						<a id="${tag.id!}">${tag.name!}</a>
+						<%
+						}
+						%>
 					</div>
-					<input type="text" id="tags" name="tags" style="display: none">
+					<input type="text" id="tags" name="tags" value="" style="display: none">
 				 </div>
 				<a lay-filter="add" lay-submit class="upload-btn btn">上传</a>
 			</form>
@@ -47,6 +49,19 @@
 <script>
 	$(".label-content a").click(function () {
 		$(this).toggleClass("select");
+		var tags = "";
+		$(".label-content a").each(function () {
+			if ($(this).hasClass("select")) {
+				console.log($(this));
+				if ("" !== tags) {
+					tags += "," + $(this).attr("id");
+				}else {
+					tags += $(this).attr("id");
+				}
+			}
+		});
+		console.log(tags);
+		$("#tags").val(tags);
 	});
 
 	layui.use('form', function(){

@@ -160,6 +160,10 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
         this.updateById(material);
     }
 
+    @Override
+    public List<Material> countByTagId(Long tagId) {
+        return this.getBaseMapper().countByTagId(tagId);
+    }
 
     @Autowired
     public void setUserService(IUserService userService) {

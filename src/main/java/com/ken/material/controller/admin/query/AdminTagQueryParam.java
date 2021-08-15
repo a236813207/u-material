@@ -1,22 +1,20 @@
-package com.ken.material.vo;
+package com.ken.material.controller.admin.query;
 
+import com.ken.material.common.page.PageRequest;
 import com.ken.material.enums.Status;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
 /**
  * @author ken
  * @version 1.0
- * @date 2021-07-19
+ * @date 2020-09-14
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TagListVo extends TagUpdateVo{
+public class AdminTagQueryParam extends PageRequest {
 
+    private String name;
     private Status status;
-
-    private LocalDateTime createTime;
 
 }

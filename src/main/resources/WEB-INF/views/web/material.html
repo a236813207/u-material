@@ -28,16 +28,18 @@
 					</ul>
 				</div>
 				<div class="tag">
-					<span>万事达</span>
-					<span>银行卡</span>
-					<span>手机银行</span>
-					<span>金融</span>
-					<span>手机支付</span>
+					<%
+					for(tag in tags){
+					%>
+					<span>${tag.name!}</span>
+					<%
+					}
+					%>
 				</div>
 				<div class="author">
 					<img src="${ctxPath}/images/web/avatar/avatar_01.jpg" alt="usucai个人头像">
-					<div class="author-name">雪夜微凉</div>
-					<div class="author-time">该素材由雪夜微凉上传于2021-05-09</div>
+					<div class="author-name">${user!}</div>
+					<div class="author-time">该素材由${user!}上传于${material.createTime!,"yyyy-MM-dd"}</div>
 				</div>
 			</div>
 		</div>
