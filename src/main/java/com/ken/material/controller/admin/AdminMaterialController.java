@@ -4,14 +4,18 @@ import com.ken.material.common.page.PageVo;
 import com.ken.material.common.response.ResBody;
 import com.ken.material.controller.admin.query.AdminMaterialQueryParam;
 import com.ken.material.service.IMaterialService;
+import com.ken.material.service.ITagService;
 import com.ken.material.vo.AdminMaterialAddVo;
 import com.ken.material.vo.MaterialListVo;
+import com.ken.material.vo.TagSelectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,9 +31,12 @@ import java.util.Map;
 public class AdminMaterialController {
 
     private IMaterialService materialService;
+    private ITagService tagService;
 
     @GetMapping("")
-    public String index() {
+    public String index(Model model) {
+        List<TagSelectVo> tags = this.tagService.searchList();
+        model.addAttribute("tags", tags);
         return "/admin/material/material";
     }
 
@@ -77,6 +84,11 @@ public class AdminMaterialController {
     @Autowired
     public void setMaterialService(IMaterialService materialService) {
         this.materialService = materialService;
+    }
+
+    @Autowired
+    public void setTagService(ITagService tagService) {
+        this.tagService = tagService;
     }
 }
 

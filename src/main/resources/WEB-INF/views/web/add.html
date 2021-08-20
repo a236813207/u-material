@@ -52,7 +52,6 @@
 		var tags = "";
 		$(".label-content a").each(function () {
 			if ($(this).hasClass("select")) {
-				console.log($(this));
 				if ("" !== tags) {
 					tags += "," + $(this).attr("id");
 				}else {
@@ -60,7 +59,6 @@
 				}
 			}
 		});
-		console.log(tags);
 		$("#tags").val(tags);
 	});
 
@@ -113,7 +111,7 @@
 			elem: '#upload', //绑定元素
 			url: '${ctxPath}/common/upload', //上传接口
 			accept: 'file',
-			exts: 'jpg|png|gif|bmp|jpeg|svg',
+			exts: 'svg',
 			done: function(data){
 				console.log(data);
 				if (data.code == 200) {

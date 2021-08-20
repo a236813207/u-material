@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,7 +23,7 @@ import java.util.UUID;
  * @description
  */
 public class OSSManager {
-    private static final String DIR = "material/";
+    private static final String DIR = "material/svg/";
     private OSSClient client;
     private Map<String, String> buckets;
 
@@ -53,6 +54,40 @@ public class OSSManager {
         IOUtils.closeQuietly(digestInput);
         InputStream localInputStream = new BufferedInputStream(new FileInputStream(dest));
         PutObjectResult result = upload(bucketName, name, localInputStream, file.getContentType());
+        IOUtils.closeQuietly(localInputStream);
+        if (dest.exists()) {
+            dest.delete();
+        }
+        if (StringUtils.isEmpty(result.getETag())) {
+            throw new IOException("can not upload file at this moment.");
+        }/* else if (!result.getETag().equalsIgnoreCase(md5)) {
+            throw new IOException("the etag difference form before upload,may be some one had change it on uploading!");
+        }*/
+        return this.buckets.get(bucketName) + "/" + name;
+    }
+
+    public String putObject(String dir, String bucketName, File file) throws IOException, NoSuchAlgorithmException {
+        if (StringUtils.isBlank(dir)) {
+            dir = DIR;
+        }
+        //先将流写入临时文件，做为上传使用，和计算md5的值
+        File tmpdir = new File(System.getProperty("java.io.tmpdir"));
+        File dest = new File(tmpdir, UUID.randomUUID().toString());
+        String fileName = file.getName();
+        String suffix = ".jpg";
+        if (StringUtils.isNotBlank(fileName)) {
+            suffix = fileName.substring(fileName.lastIndexOf("."));
+        }
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        DigestInputStream digestInput = new DigestInputStream(new FileInputStream(file), md);
+        OutputStream output = new FileOutputStream(dest);
+        IOUtils.copy(digestInput, output);
+        IOUtils.closeQuietly(output);
+        String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(md.digest());
+        String name = dir + md5 + suffix;
+        IOUtils.closeQuietly(digestInput);
+        InputStream localInputStream = new BufferedInputStream(new FileInputStream(dest));
+        PutObjectResult result = upload(bucketName, name, localInputStream, Files.probeContentType(file.toPath()));
         IOUtils.closeQuietly(localInputStream);
         if (dest.exists()) {
             dest.delete();
@@ -124,21 +159,22 @@ public class OSSManager {
         }
         if (StringUtils.isEmpty(result.getETag())) {
             throw new IOException("can not upload file at this moment.");
-        } else if (!result.getETag().equalsIgnoreCase(md5)) {
+        } /*else if (!result.getETag().equalsIgnoreCase(md5)) {
             throw new IOException("the etag difference form before upload,may be some one had change it on uploading!");
-        }
+        }*/
         return this.buckets.get(bucketName) + "/" + name;
     }
 
 
     public boolean generateImage(String imgStr, String path) {
-        if (imgStr == null)
+        if (imgStr == null) {
             return false;
+        }
         BASE64Decoder decoder = new BASE64Decoder();
         try {
-// 解密
+            // 解密
             byte[] b = decoder.decodeBuffer(imgStr);
-// 处理数据
+            // 处理数据
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
                     b[i] += 256;

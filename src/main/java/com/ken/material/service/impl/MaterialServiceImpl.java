@@ -18,19 +18,25 @@ import com.ken.material.enums.MaterialStatus;
 import com.ken.material.mapper.MaterialMapper;
 import com.ken.material.service.IMaterialService;
 import com.ken.material.service.IUserService;
+import com.ken.material.utils.ImageUtils;
+import com.ken.material.utils.oss.OSSManager;
 import com.ken.material.vo.AdminMaterialAddVo;
 import com.ken.material.vo.MaterialAddVo;
 import com.ken.material.vo.MaterialIndexVo;
 import com.ken.material.vo.MaterialListVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -41,10 +47,15 @@ import java.util.stream.Collectors;
  * @author ken
  * @since 2021-07-04
  */
+@Slf4j
 @Service
 public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> implements IMaterialService {
 
     private IUserService userService;
+    private OSSManager ossManager;
+
+    private @Value("${aliyun.oss.bucket}")
+    String bucketsName;
 
     @Override
     public PageVo<MaterialListVo> searchPage(AdminMaterialQueryParam queryParam) {
@@ -110,28 +121,38 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
 
     @Override
     public void add(MaterialAddVo addVo, HttpServletRequest request) {
-        Material material = new Material();
-        BeanUtils.copyProperties(addVo, material);
-        material.setStatus(MaterialStatus.WAIT_AUDIT);
-        String fileExt = FileUtil.extName(material.getUrl());
-        material.setFileFormat(fileExt);
         Long userId = (Long) request.getSession().getAttribute("userId");
         if (userId == null) {
             throw new AuthenticationException("登录过期");
         }
+        Material material = new Material();
+        BeanUtils.copyProperties(addVo, material);
+        String svgUrl = material.getUrl();
+        String url = svg2Jpg(svgUrl);
+        material.setStatus(MaterialStatus.WAIT_AUDIT);
+        String fileExt = FileUtil.extName(material.getUrl());
+        material.setFileFormat(fileExt);
+        material.setUrl(url);
+        material.setSvgUrl(svgUrl);
         User user = this.userService.getById(userId);
         material.setUserId(userId);
         material.setUsername(user.getUsername());
-        this.save(material);
+        if(!this.save(material)) {
+            throw new BizException(BizCodeFace.createBizCode(ErrorCode.FAIL).message("上传失败！"));
+        }
     }
 
     @Override
     public void adminAdd(AdminMaterialAddVo addVo) {
         Material material = new Material();
         BeanUtils.copyProperties(addVo, material);
+        String svgUrl = material.getUrl();
+        String url = svg2Jpg(svgUrl);
         material.setStatus(MaterialStatus.WAIT_AUDIT);
-        String fileExt = FileUtil.extName(material.getUrl());
+        String fileExt = FileUtil.extName(svgUrl);
         material.setFileFormat(fileExt);
+        material.setUrl(url);
+        material.setSvgUrl(svgUrl);
         User user = this.userService.findByUsername(addVo.getUsername());
         material.setUserId(user.getId());
         this.save(material);
@@ -160,6 +181,37 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
         this.updateById(material);
     }
 
+    /**
+     * svg转jpg
+     * @param svgUrl svg图片地址
+     * @return jpg图片地址
+     */
+    private String svg2Jpg(String svgUrl) {
+        if (!StringUtils.hasText(svgUrl)) {
+            throw new BizException(BizCodeFace.createBizCode(ErrorCode.DATE_NULL).message("图片不能为空"));
+        }
+        String fileName = UUID.randomUUID().toString() + ".svg";
+        String savePath = System.getProperty("java.io.tmpdir");
+        String filePath = savePath + File.separator + fileName;
+        try {
+            ImageUtils.download(svgUrl, fileName, savePath);
+            if (!new File(filePath).exists()) {
+                throw new BizException(BizCodeFace.createBizCode(ErrorCode.FAIL));
+            }
+            String jpgFilePath = savePath + File.separator + UUID.randomUUID().toString() + ".jpg";
+            File jpgFile = new File(jpgFilePath);
+            ImageUtils.svg2Jpg(new File(filePath), jpgFile);
+            if (!jpgFile.exists()) {
+                throw new BizException(BizCodeFace.createBizCode(ErrorCode.FAIL));
+            }
+            log.info(jpgFilePath);
+            return this.ossManager.putObject("material/jpg/", bucketsName, jpgFile);
+        } catch (Exception e) {
+            log.error("svg2Jpg error [{}]", e.getMessage(), e);
+        }
+        return null;
+    }
+
     @Override
     public List<Material> countByTagId(Long tagId) {
         return this.getBaseMapper().countByTagId(tagId);
@@ -168,5 +220,10 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
     @Autowired
     public void setUserService(IUserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setOssManager(OSSManager ossManager) {
+        this.ossManager = ossManager;
     }
 }

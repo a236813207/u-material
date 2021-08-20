@@ -23,6 +23,8 @@ public class MaterialListVo {
 
     private String tags;
 
+    private Long sortNo;
+
     private MaterialStatus status;
 
     private String url;

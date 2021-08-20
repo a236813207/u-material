@@ -24,15 +24,15 @@
                     <div class="form-inline">
                         <div class="form-group">
                             <label for="username" class="sr-only">用户名称</label>
-                            <input type="text" placeholder="输入用户名称查询" id="username" name="username" class="form-control">
+                            <input type="text" placeholder="输入用户名称查询" id="susername" name="username" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="brand" class="sr-only">品牌</label>
-                            <input type="text" placeholder="输入品牌查询" id="brand" name="brand" class="form-control">
+                            <input type="text" placeholder="输入品牌查询" id="sbrand" name="brand" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="keywords" class="sr-only">关键词</label>
-                            <input type="text" placeholder="输入关键词查询" id="keywords" name="keywords" class="form-control">
+                            <input type="text" placeholder="输入关键词查询" id="skeywords" name="keywords" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="status" class="sr-only">状态</label>
@@ -66,36 +66,42 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">用户名称：</label>
-                                            <input type="text" class="form-control" placeholder="用户名称"
+                                            <input type="text" class="form-control" placeholder="用户名称" id="username"
                                                    name="username" datatype="*">
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">品牌：</label>
-                                            <input type="text" class="form-control" placeholder="品牌"
+                                            <input type="text" class="form-control" placeholder="品牌" id="brand"
                                                    name="brand" datatype="*">
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">关键词：</label>
-                                            <input type="text" class="form-control" placeholder="关键词"
+                                            <input type="text" class="form-control" placeholder="关键词" id="keywords"
                                                    name="keywords" datatype="*">
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-3 control-label">标签：</label>
-                                            <input type="text" class="form-control" placeholder="标签"
-                                                   name="tags" datatype="*">
+                                            <label class="col-sm-4 control-label">标签：</label>
+                                            <%
+                                            for(tag in tags){
+                                            %>
+                                            <input type="checkbox" name="tag" id="${tag.id!}" title="${tag.name!}">
+                                            <%
+                                            }
+                                            %>
+                                            <input type="text" id="tags" name="tags" value="" style="display: none" datatype="*">
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">排序号：</label>
-                                            <input type="text" class="form-control" placeholder="排序号"
+                                            <input type="text" class="form-control" placeholder="排序号" id="sortNo"
                                                    name="sortNo" datatype="*">
                                         </div>
                                         <div class="form-group" style="display: none">
                                             <label class="col-sm-3 control-label">id：</label>
                                             <input type="text" class="form-control" placeholder="id" name="id"
-                                                   id="id" datatype="*">
+                                                   id="id">
                                         </div>
                                         <div  class="form-group">
-                                            <label class="col-sm-3 control-label">图片地址：</label>
+                                            <a id="view" class="col-sm-3 control-label" target="_blank" href="">查看图片：</a>
                                             <input type="text" class="form-control" placeholder="图片地址" name="url"
                                                    id="url" disabled size="255" maxlength="255">
                                             <span class="Validform_checktip"></span>
@@ -108,8 +114,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                                        <!--<button type="submit" class="btn btn-primary">保存</button>-->
-                                        <button lay-filter="save" lay-submit class="btn btn-primary">保存</button>
+                                        <button id="button" lay-filter="save" lay-submit class="btn btn-primary">保存</button>
                                     </div>
                                 </form>
                             </div>
@@ -217,7 +222,10 @@
             },{
                 "targets": 7,
                 "render": function(data, type, row, meta) {
-                    return '<a class="btn btn-sm btn-primary" style="margin-left: 5px"  onclick="deleteMaterial('+row.id+');">删除</a>';
+                    return '<a class="btn btn-sm btn-success" style="margin-left: 5px" data-toggle="modal" data-target="#addMaterial" ' +
+                        'data-operation="edit" data-data=\''+JSON.stringify(row)+'\'>编辑</a>'
+                        +'<a class="btn btn-sm btn-primary" style="margin-left: 5px"  onclick="auditMaterial('+row.id+');">审核</a>'
+                        +'<a class="btn btn-sm btn-danger" style="margin-left: 5px"  onclick="deleteMaterial('+row.id+');">删除</a>';
                 },
             }],
             /*是否开启主题*/
@@ -238,6 +246,50 @@
                 }
             },
         });
+
+        $('#addMaterial').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget);
+            const operation = button.data('operation');
+            const modal = $(this);
+            if(operation==="add"){
+                $('#id').val("");
+                $('#username').val("");
+                $('#brand').val("");
+                $('#keywords').val("");
+                $('#tags').val("");
+                $('#sortNo').val("");
+                $('#view').attr("href", "");
+                $('#url').val("");
+                $('[name="tag"]').each(function () {
+                    $(this).prop("checked", false);
+                });
+                layui.form.render();
+                $('#button').attr("lay-filter", "save");
+            }else if(operation==="edit"){
+                const row = button.data('data'); // Extract info from data-* attributes
+                modal.find('.modal-title').text("编辑素材");
+                modal.find('#id').val(row.id);
+                modal.find('#username').val(row.username);
+                modal.find('#brand').val(row.brand);
+                modal.find('#keywords').val(row.keywords);
+                modal.find('#tags').val(row.tags);
+                modal.find('#sortNo').val(row.sortNo);
+                modal.find('#view').attr("href", row.url);
+                modal.find('#url').val(row.url);
+                modal.find('#button').attr("lay-filter", "update");
+                const tags = row.tags;
+                const tagsArr = tags.split(",");
+                $('[name="tag"]').each(function () {
+                    $(this).prop("checked", false);
+                });
+                layui.form.render();
+                for (var i=0;i<tagsArr.length ;i++ ) {
+                    const id = tagsArr[i];
+                    $('#'+id).prop("checked", true);
+                }
+                layui.form.render();
+            }
+        });
     });
 
     layui.use('form', function(){
@@ -245,10 +297,46 @@
         //监听提交
         form.on('submit(save)', function(data){
             var fields = data.field;
+            var tags = "";
+            $('[name="tag"]').each(function () {
+                if ($(this).is(':checked')) {
+                    if ("" !== tags) {
+                        tags += "," + $(this).attr("id");
+                    }else {
+                        tags += $(this).attr("id");
+                    }
+                }
+            });
+            fields.tags = tags;
             util.post("${ctxPath}/admin/material/add", fields, function(res){
-                console.log(res);
                 if(res.code==200){
+                    layer.msg("添加成功！");
+                    searchMaterial();
+                }else{
+                    parent.openMsgByStatus(res);
+                }
+            });
+            return false;
+        });
 
+        //监听提交
+        form.on('submit(update)', function(data){
+            const fields = data.field;
+            var tags = "";
+            $('[name="tag"]').each(function () {
+                if ($(this).is(':checked')) {
+                    if ("" !== tags) {
+                        tags += "," + $(this).attr("id");
+                    }else {
+                        tags += $(this).attr("id");
+                    }
+                }
+            });
+            fields.tags = tags;
+            util.post("${ctxPath}/admin/material/update", fields, function(res){
+                if(res.code===200){
+                    $("#addMaterial").modal('hide');  //手动关闭
+                    layer.msg("修改成功！");
                     searchMaterial();
                 }else{
                     parent.openMsgByStatus(res);
@@ -272,10 +360,11 @@
             done: function(res){
                 //上传完毕回调
                 layer.msg("上传成功")
+                $('#view').attr("href", res.data);
                 $('#url').val(res.data);
             },
             accept: 'file',
-            exts: 'jpg|png|gif|bmp|jpeg|svg',
+            exts: 'svg',
             error: function(){
                 //请求异常回调
             }
@@ -287,6 +376,53 @@
         //var index = layer.load();
         var url = "${ctxPath}/admin/material/list";
         datatable.ajax.url(url).load();
+    }
+
+    function auditMaterial(id) {
+        layer.confirm('素材审核', {
+            btn: ['通过','拒绝','取消'], //按钮
+            shade: false //不显示遮罩
+        }, function(){
+            $.ajax({
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                url: "${ctxPath}/admin/material//update/status/"+id+"?status=1",
+                success:function(state){
+                    if (state.code == '200') {
+                        layer.msg("操作成功！",function(index){
+                            layer.close(index);
+                            searchMaterial();
+                        });
+                    }else {
+                        parent.openMsgByStatus(state);
+                    }
+                },
+                error: function(state){
+                    layer.alert("加载页面发生异常或您无此操作的权限！");
+                },
+            });
+        }, function(){
+            $.ajax({
+                type: "POST",
+                cache: false,
+                dataType: "json",
+                url: "${ctxPath}/admin/material//update/status/"+id+"?status=-1",
+                success:function(state){
+                    if (state.code == '200') {
+                        layer.msg("操作成功！",function(index){
+                            layer.close(index);
+                            searchMaterial();
+                        });
+                    }else {
+                        parent.openMsgByStatus(state);
+                    }
+                },
+                error: function(state){
+                    layer.alert("加载页面发生异常或您无此操作的权限！");
+                },
+            });
+        }, function(){ });
     }
 
     function deleteMaterial(id) {

@@ -41,6 +41,12 @@ public class Material extends BaseEntity {
     private String url;
 
     /**
+     * 原始svg地址
+     */
+    @TableField("svg_url")
+    private String svgUrl;
+
+    /**
      * 品牌
      */
     @TableField("brand")
